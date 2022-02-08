@@ -5,3 +5,11 @@ def pure(): Unit & Impure =
     let list = List.repeat(1000000, 7);
     let newList = List.map((y -> x+y), list);
     print(newList)
+
+def getVariable2(): Int32 & Impure = print("Hello"); 42
+
+def _pure2(): Unit & Impure = 
+    let x = getVariable2();
+    let list = List.repeat(1000000, 7);
+    let newList = List.map((y -> x+y), list);
+    print(newList)
