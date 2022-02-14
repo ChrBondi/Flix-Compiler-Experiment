@@ -8,7 +8,7 @@ def getVar(): Unit & Impure =
 
 def getVariable2(): Int32 & Impure = print("Hello"); 42
 
-def _getVar2(): Unit & Impure = 
+def getVar2(): Unit & Impure = 
     let x = getVariable2();
     let list = List.repeat(1000000, 7);
     let newList = List.map((y -> x+y), list);

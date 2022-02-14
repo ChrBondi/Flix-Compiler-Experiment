@@ -6,6 +6,8 @@ def main(_args: Array[String]): Int32 & Impure =
     let functionmap_runtime = benchmark(functionMap, 10);
     let letmap_runtime = benchmark(letMap,10);
     let getvar_runtime = benchmark(getVar, 10);
+    let letmap2_runtime = benchmark(letMap2,10);
+    let getvar2_runtime = benchmark(getVar2, 10);
 
     println();
 
@@ -14,6 +16,8 @@ def main(_args: Array[String]): Int32 & Impure =
     println("FunctionMap runtime: " + Float64.toString(functionmap_runtime) + "s");
     println("letMap runtime: " + Float64.toString(letmap_runtime) + "s");    
     println("getVar runtime: " + Float64.toString(getvar_runtime) + "s");
+    println("letMap2 runtime: " + Float64.toString(letmap2_runtime) + "s");    
+    println("getVar2 runtime: " + Float64.toString(getvar2_runtime) + "s");
 
     0
 
