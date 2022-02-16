@@ -1,16 +1,16 @@
 object letMap {
 
-  def letMap(): Unit = {
+  def letMap(hof: List[Int] => Unit): Unit = {
     val x = 5
-    val list = List.fill(1_000_000)(7)
+    val list = List.fill(1000000)(7)
     val newList = list.map(y => x+y)
-    print(newList)
+    hof(newList)
   }
 
-  def letMap2(): Unit = {
+  def letMap2(hof: List[Int] => Unit): Unit = {
     val x = 5+5
-    val list = List.fill(1_000_000)(7)
+    val list = List.fill(1000000)(7)
     val newList = list.map(y => x+y)
-    print(newList)
+    hof(newList)
   }
 }

@@ -6,17 +6,17 @@ object pureVar {
     42
   }
 
-  def pure(): Unit = {
+  def getVarPure(hof: List[Int] => Unit): Unit = {
     val x = get42()
     val list = List.fill(1000000)(7)
     val newList = list.map(y => x + y)
-    print(newList)
+    hof(newList)
   }
 
-  def pure2(): Unit = {
+  def getVarImpure(hof: List[Int] => Unit): Unit = {
     val x = getHello42
-    val list = List.fill(1_000_000)(7)
+    val list = List.fill(1000000)(7)
     val newList = list.map(y => x + y)
-    print(newList)
+    hof(newList)
   }
 }

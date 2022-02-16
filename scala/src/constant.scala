@@ -1,9 +1,9 @@
 object constant {
-  def constants(): Unit = {
-    val x = 1
-    val y = 2
+  def constants(hof: List[Int] => Unit): Unit = {
+    val x = true
+    val y = List.fill(1_000_000)(100)
     val z = 3
     val w = 4
-    print(List.fill(1_000_000)(x+y+z+w))
+    hof(if (!x) y else List(z,w))
   }
 }
