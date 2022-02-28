@@ -21,10 +21,10 @@ def main(_args: Array[String]): Int32 & Impure =
 
     0
 
-def benchmark(f: Unit -> Unit & ef , n: Int32): Float64 & Impure =
+def benchmark(f: (List[Int32] -> Unit) -> Unit & ef , n: Int32): Float64 & Impure =
     def loop(n1) = match n1 {
         case 0 => 0
-        case _ => f(); loop(n1-1)
+        case _ => f((_: List[Int32]) -> ()); loop(n1-1)
     };
     let before = Epoch.nanoseconds();
     loop(n);
