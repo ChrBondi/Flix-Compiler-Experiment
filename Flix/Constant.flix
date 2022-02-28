@@ -1,4 +1,4 @@
-def constants(hof : List[Int32] -> Unit): Unit & Pure = 
+def _constants(hof : List[Int32] -> Unit): Unit & Pure = 
     let x = 1;
     let y = 2;
     let z = 3;
