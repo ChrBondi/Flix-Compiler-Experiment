@@ -18,7 +18,7 @@ object main {
   }
 
   def print_benchmark(name: String, runtime: (Long, Long, Long)) {
-    println(name + ": total runtime: " + runtime._1 + " average runtime: " + runtime._2 + " median runtime: " + runtime._3)
+    println(name + ": total runtime: " + runtime._1 + " s, average runtime: " + runtime._2 + " ms, median runtime: " + runtime._3 + " ms")
   }
 
   def benchmark(f: (List[Int] => Unit) => Unit): (Long, Long, Long) = {
