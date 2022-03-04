@@ -17,8 +17,7 @@ fun main(args: Array<String>) {
 }
 
 fun print_benchmark(name: String, runtime: Triple<Long, Long, Long>) {
-    println(name + ": total runtime: " + runtime.first + " average runtime: " + runtime.second + " median runtime: " + runtime.third)
-
+    println(name + ": total runtime: " + runtime.first + " s average runtime: " + runtime.second + " ms median runtime: " + runtime.third+ " ms")
 }
 
 fun benchmark(f: (((List<Int>) -> Unit ) -> Unit)): Triple<Long, Long, Long> {
