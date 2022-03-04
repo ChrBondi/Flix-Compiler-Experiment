@@ -1,37 +1,54 @@
 
 def main(_args: Array[String]): Int32 & Impure =
-    let iterations = 1000;
+    let iterations = 10;
     let constant_runtime = benchmark(constants, iterations);
     let deadvariable_runtime = benchmark(deadVariable, iterations);
     let functionmap_runtime = benchmark(functionMap, iterations);
-    let letmap_runtime = benchmark(letMap,iterations);
-    let getvar_runtime = benchmark(getVar, iterations);
-    let letmap2_runtime = benchmark(letMap2,iterations);
-    let getvar2_runtime = benchmark(getVar2, iterations);
+    let letmapconstant_runtime = benchmark(letMap,iterations);
+    let letmapadd_runtime = benchmark(letMap2,iterations);
+    let get_var_pure_runtime = benchmark(getVar, iterations);
+    let get_var_impure_runtime = benchmark(getVar2, iterations);
 
     println();
-    println("Number of iterations: " + Int32.toString(iterations));
-    println("Constant runtime: " + Float64.toString(constant_runtime) + "s");
-    println("Dead Variable runtime: " + Float64.toString(deadvariable_runtime) + "s");
-    println("FunctionMap runtime: " + Float64.toString(functionmap_runtime) + "s");
-    println("letMap runtime: " + Float64.toString(letmap_runtime) + "s");    
-    println("getVar runtime: " + Float64.toString(getvar_runtime) + "s");
-    println("letMap2 runtime: " + Float64.toString(letmap2_runtime) + "s");    
-    println("getVar2 runtime: " + Float64.toString(getvar2_runtime) + "s");
+    print_benchmark("Constant", constant_runtime);
+    print_benchmark("DeadVariable", deadvariable_runtime);
+    print_benchmark("FunctionMap", functionmap_runtime);
+    print_benchmark("LetMapConstant", letmapconstant_runtime);
+    print_benchmark("LetMapAdd", letmapadd_runtime);
+    print_benchmark("GetVarPure", get_var_pure_runtime);
+    print_benchmark("GetVarImpure", get_var_impure_runtime);
 
     0
 
-def benchmark(f: (List[Int32] -> Unit) -> Unit & ef , n: Int32): Float64 & Impure =
-    use Time/Epoch.nanoseconds;
-    def loop(n1) = match n1 {
-        case 0 => 0
-        case _ => f((_: List[Int32]) -> ()); loop(n1-1)
-    };
-    let before = nanoseconds();
-    loop(n);
-    let after = nanoseconds();
-    (Int64.toFloat64(after) - Int64.toFloat64(before)) / Int32.toFloat64(1_000_000_000)
+def print_benchmark(name: String, runtime: (Int64, Int64, Int64)): Unit & Impure = {
+    println(name + ": total runtime: " + runtime.first + " average runtime: " + runtime.second + " median runtime: " + runtime.third)
+}
 
+
+def benchmark(f: (List[Int32] -> Unit) -> Unit & ef , n: Int32): (Int64, Int64, Int64) & Impure = {
+    let n = 1_000;
+    let times = benchmark_ac(n, f, Nil);
+    let totalTime = List.foldLeft(((acc, e) -> acc + e),0, times);
+    let totalTimeSeconds = totalTime/1_000_000_000;
+    let average = totalTime/n/1_000_000;
+    let median = List.sort(times)[n/2]/1_000_000;
+    //Seconds
+    (totalTimeSeconds, average, median)
+}
+
+def benchmark_ac(n: Int32, f: ((List[Int32]) -> Unit) -> Unit, acc: List[Int64]): List[Int64] = {
+    use Time/Epoch.nanoseconds;
+    if (n > 0) {
+        let before = nanoseconds();
+        f((_: List[Int32]) -> ());
+        let after = nanoseconds();
+        let time = (after - before);
+        benchmark_ac(n - 1, f, time :: acc)
+    }
+    else {
+        acc
+    }
+}
 
 def constants(hof : List[Int32] -> Unit): Unit & Pure = 
     let x = 1;
