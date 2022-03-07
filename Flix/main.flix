@@ -5,10 +5,13 @@ def main(_args: Array[String]): Int32 & Impure =
     let constant_runtime = benchmark(constants, iterations);
     let deadvariable_runtime = benchmark(deadVariable, iterations);
     let functionmap_runtime = benchmark(functionMap, iterations);
-    let letmapconstant_runtime = benchmark(letMap,iterations);
-    let letmapadd_runtime = benchmark(letMap2,iterations);
-    let get_var_pure_runtime = benchmark(getVar, iterations);
-    let get_var_impure_runtime = benchmark_impure(getVar2, iterations);
+    let letmapconstant_runtime = benchmark(letMapConstant,iterations);
+    let letmapadd_runtime = benchmark(letMapAdd,iterations);
+    let get_var_pure_runtime = benchmark(getVarPure, iterations);
+    let get_var_impure_runtime = benchmark_impure(getVarImpure, iterations);
+    let branch_pure_runtime = benchmark(branchPure, iterations);
+    let branch_impure_runtime = benchmark_impure(branchImpure, iterations);
+    let lambda_runtime = benchmark(lambda, iterations);
 
     println();
     print_benchmark("Constant", constant_runtime);
@@ -18,6 +21,9 @@ def main(_args: Array[String]): Int32 & Impure =
     print_benchmark("LetMapAdd", letmapadd_runtime);
     print_benchmark("GetVarPure", get_var_pure_runtime);
     print_benchmark("GetVarImpure", get_var_impure_runtime);
+    print_benchmark("BranchPure", branch_pure_runtime);
+    print_benchmark("BranchImpure", branch_impure_runtime);
+    print_benchmark("Lambda", lambda_runtime);
 
     0
 
@@ -37,13 +43,10 @@ def benchmark_impure(f: (List[Int32] -> Unit) -> Unit & Impure, n: Int32): (Int6
 }
 
 def benchmark_ac(n: Int32, f: ((List[Int32]) -> Unit) -> Unit, acc: List[Int64]): List[Int64] & Impure = {
-    use Time/Epoch.nanoseconds;
     if (n > 0) {
-        let before = nanoseconds();
-
+        let before = timeInNanoSeconds();
         let _ = f((_: List[Int32]) -> ());
-
-        let after = nanoseconds();
+        let after = timeInNanoSeconds();
         let time = (after - before);
         benchmark_ac(n - 1, f, time :: acc)
     }
@@ -53,17 +56,22 @@ def benchmark_ac(n: Int32, f: ((List[Int32]) -> Unit) -> Unit, acc: List[Int64])
 }
 
 def benchmark_ac_impure(n: Int32, f: ((List[Int32]) -> Unit) -> Unit & Impure, acc: List[Int64]): List[Int64] & Impure = {
-    use Time/Epoch.nanoseconds;
     if (n > 0) {
-        let before = nanoseconds();
+        let before = timeInNanoSeconds();
         let _  = f((_: List[Int32]) -> ());
-        let after = nanoseconds();
+        let after = timeInNanoSeconds();
         let time = (after - before);
         benchmark_ac_impure(n - 1, f, time :: acc)
     }
     else {
         acc
     }
+}
+
+def timeInNanoSeconds(): Int64 & Impure = {
+    use Time/Epoch.nanoseconds;
+    nanoseconds()
+    //Epoch.nanoseconds()
 }
 
 
@@ -125,7 +133,7 @@ def functionMap(hof : List[Int32] -> Unit): Unit & Pure =
 
 def get42(): Int32 & Pure = 42
 
-def getVar(hof : List[Int32] -> Unit): Unit & Pure = 
+def getVarPure(hof : List[Int32] -> Unit): Unit & Pure = 
     let x = get42();
     let list = List.repeat(1_000_000, 7);
     let newList = List.map((y -> x+y), list);
@@ -133,22 +141,43 @@ def getVar(hof : List[Int32] -> Unit): Unit & Pure =
 
 def getHello42(): Int32 & Impure = print("Hello"); 42
 
-def getVar2(hof : List[Int32] -> Unit): Unit & Impure = 
+def getVarImpure(hof : List[Int32] -> Unit): Unit & Impure = 
     let x = getHello42();
     let list = List.repeat(1_000_000, 7);
     let newList = List.map((y -> x+y), list);
     hof(newList)
 
 
-def letMap(hof: List[Int32] -> Unit): Unit & Pure = 
+def letMapConstant(hof: List[Int32] -> Unit): Unit & Pure = 
     let x = 5;
     let list = List.repeat(1_000_000, 7);
     let newList = List.map((y -> x+y), list);
     hof(newList)
 
     
-def letMap2(hof: List[Int32] -> Unit): Unit & Pure = 
+def letMapAdd(hof: List[Int32] -> Unit): Unit & Pure = 
     let x = 5+5;
     let list = List.repeat(1_000_000, 7);
     let newList = List.map((y -> x+y), list);
     hof(newList)
+
+
+def branchPure(hof: List[Int32] -> Unit): Unit = {
+    let x = 13;
+    let y = true;
+    let list = List.repeat(1000000)(if (y) x else x+1 );
+    hof(list)
+  }
+
+def branchImpure(hof: List[Int32] -> Unit): Unit & Impure = {
+    let x = 13;
+    let y = {print("");true};
+    let list = List.repeat(1000000)(if (y) x else x+1 );
+    hof(list)
+  }
+
+def lambda(hof: List[Int32] -> Unit): Unit = {
+    let x = 19;
+    let list = List.repeat(1000000)((() -> x+2)());
+    hof(list)
+  }
