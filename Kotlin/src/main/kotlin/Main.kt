@@ -6,6 +6,9 @@ fun main(args: Array<String>) {
     val letmapadd_runtime = benchmark(::letMapAdd)
     val get_var_pure_runtime = benchmark(::getVarPure)
     val get_var_impure_runtime = benchmark(::getVarImpure)
+    val branch_pure_runtime = benchmark(::branchPure)
+    val branch_impure_runtime = benchmark(::branchImpure)
+    val lambda_runtime = benchmark(::lambda)
     println()
     print_benchmark("Constant", constant_runtime)
     print_benchmark("DeadVariable", deadvariable_runtime)
@@ -14,6 +17,9 @@ fun main(args: Array<String>) {
     print_benchmark("LetMapAdd", letmapadd_runtime)
     print_benchmark("GetVarPure", get_var_pure_runtime)
     print_benchmark("GetVarImpure", get_var_impure_runtime)
+    print_benchmark("BranchPure", branch_pure_runtime)
+    print_benchmark("BranchImpure", branch_impure_runtime)
+    print_benchmark("Lambda", lambda_runtime)
 }
 
 fun print_benchmark(name: String, runtime: Triple<Long, Long, Long>) {
@@ -97,4 +103,24 @@ fun getVarImpure(hof: (List<Int>) -> Unit) {
     val list =  List(1_000_000){7}
     val newList = list.map{y -> x + y}
     hof(newList)
+}
+
+fun branchPure(hof: (List<Int>) -> Unit) {
+    val x = 13
+    val y = true
+    val list =  List(1_000_000){if (y) x else x}
+    hof(list)
+}
+
+fun branchImpure(hof: (List<Int>) -> Unit) {
+    val x = 13
+    val y = {print("");true}
+    val list =  List(1_000_000){if (y()) x else x}
+    hof(list)
+}
+
+fun lambda(hof: (List<Int>) -> Unit) {
+    val x = 19
+    val list =  List(1_000_000){{x+2}()}
+    hof(list)
 }
