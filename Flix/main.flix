@@ -93,7 +93,7 @@ def medianTime(n: Int32, times: List[Int64]): Int64 = {
 }
 
 def middle_elm(lst: List[Int64], n: Int32): Int64 = {
-    let middle_elm_lst = List.slice(n/2, n/2, lst);
+    let middle_elm_lst = List.slice(n/2, (n/2)+1, lst);
     Option.getWithDefault(Int32.toInt64(0), List.head(middle_elm_lst))
 }
 
