@@ -49,11 +49,11 @@ object main {
   }
 
   def constants(hof: List[Int] => Unit): Unit = {
-    val x = true
-    val y = List.fill(1_000_000)(100)
+    val x = 1
+    val y = 2
     val z = 3
     val w = 4
-    hof(if (!x) y else List(z, w))
+    hof(List.fill(1_000_000)(x+y+z+w))
   }
 
   def deadVariable(hof: List[Int] => Unit): Unit = {
@@ -85,7 +85,7 @@ object main {
 
   def get42() = 42
 
-  def getHello42: Int = {
+  def getHello42(): Int = {
     print("Hello")
     42
   }
@@ -98,7 +98,7 @@ object main {
   }
 
   def getVarImpure(hof: List[Int] => Unit): Unit = {
-    val x = getHello42
+    val x = getHello42()
     val list = List.fill(1000000)(7)
     val newList = list.map(y => x + y)
     hof(newList)

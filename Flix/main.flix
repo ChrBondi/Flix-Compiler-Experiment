@@ -4,6 +4,7 @@ def main(_args: Array[String]): Int32 & Impure =
 
     let constant_runtime = benchmark(constants, iterations);
     let deadvariable_runtime = benchmark(deadVariable, iterations);
+    print_benchmark("DeadVariable", deadvariable_runtime);
     let functionmap_runtime = benchmark(functionMap, iterations);
     let letmapconstant_runtime = benchmark(letMapConstant,iterations);
     let letmapadd_runtime = benchmark(letMapAdd,iterations);
@@ -181,3 +182,13 @@ def lambda(hof: List[Int32] -> Unit): Unit = {
     let list = List.repeat(1000000)((() -> x+2)());
     hof(list)
   }
+
+def _big (hof: List[Int32] -> Unit): Unit = {
+    let x = List.repeat(1000000)(27 );
+    let y = x;
+    let _ = hof(y);
+    let _ = hof(y);
+    let _ = hof(y);
+    let _ = hof(y);
+    hof(y)
+}

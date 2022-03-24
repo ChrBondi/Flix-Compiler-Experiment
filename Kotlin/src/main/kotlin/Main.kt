@@ -23,104 +23,103 @@ fun main(args: Array<String>) {
 }
 
 fun print_benchmark(name: String, runtime: Triple<Long, Long, Long>) {
-    println(name + ": total runtime: " + runtime.first + " s, average runtime: " + runtime.second + " ms, median runtime: " + runtime.third+ " ms")
+    println(name + ": total runtime: " + runtime.first + " s, average runtime: " + runtime.second + " ms, median runtime: " + runtime.third + " ms")
 }
 
-fun benchmark(f: (((List<Int>) -> Unit ) -> Unit)): Triple<Long, Long, Long> {
+fun benchmark(f: (((List<Int>) -> Unit) -> Unit)): Triple<Long, Long, Long> {
     val n = 1_000
     val times = benchmark_ac(n, f, emptyList())
     val totalTime = times.sum()
-    val totalTimeSeconds = totalTime/1_000_000_000
-    val average = totalTime/n/1_000_000
-    val median = times.sorted()[n/2]/1_000_000
+    val totalTimeSeconds = totalTime / 1_000_000_000
+    val average = totalTime / n / 1_000_000
+    val median = times.sorted()[n / 2] / 1_000_000
     //Seconds
     return Triple(totalTimeSeconds, average, median)
 }
 
-fun benchmark_ac(n: Int, f: ((List<Int>) -> Unit) -> Unit, acc: List<Long>): List<Long>  {
+fun benchmark_ac(n: Int, f: ((List<Int>) -> Unit) -> Unit, acc: List<Long>): List<Long> {
     if (n > 0) {
         val before = System.nanoTime()
         f { l: List<Int> -> {} }
         val after = System.nanoTime()
         val time = (after - before)
         return benchmark_ac(n - 1, f, listOf(time) + acc)
-    }
-    else {
+    } else {
         return acc
     }
 }
 
-fun constants(hof: (List<Int>) -> Unit)  {
-    val x = true
-    val y = List(1_000_000){100}
+fun constants(hof: (List<Int>) -> Unit) {
+    val x = 1
+    val y = 2
     val z = 3
     val w = 4
-    hof(if (!x) y else listOf(z,w))
+    hof(List(1_000_000) { x + y + z + w })
 }
 
 fun deadVariable(hof: (List<Int>) -> Unit) {
-    val x = List(1_000_000){7}
+    val x = List(1_000_000) { 7 }
     hof(emptyList())
 }
 
-fun double(x: Int): Int = x*2
+fun double(x: Int): Int = x * 2
 
 fun functionMap(hof: (List<Int>) -> Unit) {
-    val list = List(1_000_000){7}
+    val list = List(1_000_000) { 7 }
     val newList = list.map(::double)
     hof(newList)
 }
 
 fun letMapConstant(hof: (List<Int>) -> Unit) {
     val x = 5
-    val list = List(1_000_000){7}
-    val newList = list.map{y -> x+y}
+    val list = List(1_000_000) { 7 }
+    val newList = list.map { y -> x + y }
     hof(newList)
 }
 
 fun letMapAdd(hof: (List<Int>) -> Unit) {
-    val x = 5+5
-    val list =  List(1_000_000){7}
-    val newList = list.map{y -> x+y}
+    val x = 5 + 5
+    val list = List(1_000_000) { 7 }
+    val newList = list.map { y -> x + y }
     hof(newList)
 }
 
 fun get42() = 42
-fun getHello42(): Int  {
+fun getHello42(): Int {
     print("Hello")
     return 42
 }
 
 fun getVarPure(hof: (List<Int>) -> Unit) {
     val x = get42()
-    val list = List(1_000_000){7}
-    val newList = list.map{y -> x + y}
+    val list = List(1_000_000) { 7 }
+    val newList = list.map { y -> x + y }
     hof(newList)
 }
 
 fun getVarImpure(hof: (List<Int>) -> Unit) {
     val x = getHello42()
-    val list =  List(1_000_000){7}
-    val newList = list.map{y -> x + y}
+    val list = List(1_000_000) { 7 }
+    val newList = list.map { y -> x + y }
     hof(newList)
 }
 
 fun branchPure(hof: (List<Int>) -> Unit) {
     val x = 13
     val y = true
-    val list =  List(1_000_000){if (y) x else x}
+    val list = List(1_000_000) { if (y) x else x + 1 }
     hof(list)
 }
 
 fun branchImpure(hof: (List<Int>) -> Unit) {
     val x = 13
-    val y = {print("");true}
-    val list =  List(1_000_000){if (y()) x else x}
+    val y = { print("");true }
+    val list = List(1_000_000) { if (y()) x else x + 1 }
     hof(list)
 }
 
 fun lambda(hof: (List<Int>) -> Unit) {
     val x = 19
-    val list =  List(1_000_000){{x+2}()}
+    val list = List(1_000_000) { { x + 2 }() }
     hof(list)
 }

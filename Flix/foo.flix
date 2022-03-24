@@ -1,7 +1,7 @@
-def f(x: Int32): Int32 = g(x)
+def foo(x: Int32): Int32 = bar(7, x)
 
-def g(x: Int32): Int32 = x!
+def bar(x: Int32, y: Int32): Int32 = x+y
 
-def h(): Int32 = 5
-
-def _main(_args: Array[String]): Int32 & Impure = f(h())
+def main(_args: Array[String]): Int32 & Impure =
+ print(foo(5))
+ 0
