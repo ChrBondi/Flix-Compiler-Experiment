@@ -129,4 +129,15 @@ object main {
     else if (n == 1) 1
     else fib(n - 2) + fib(n - 1)
   }
+
+  def big(hof: List[Int] => Unit): Unit = {
+    val a = List.fill(1000000)(22)
+    val b = a
+    hof(b)
+    hof(b)
+    hof(b)
+    hof(b)
+    hof(b)
+    hof(b)
+  }
 }

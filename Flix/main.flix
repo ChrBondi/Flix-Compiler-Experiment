@@ -45,7 +45,7 @@ def benchmark_impure(f: (List[Int32] -> Unit) -> Unit & Impure, n: Int32): (Int6
 def benchmark_ac(n: Int32, f: ((List[Int32]) -> Unit) -> Unit, acc: List[Int64]): List[Int64] & Impure = {
     if (n > 0) {
         let before = timeInNanoSeconds();
-        let _ = f((_: List[Int32]) -> ());
+        let _ = f((_: List[Int32]) -> ()) as & Impure; //Dead 
         let after = timeInNanoSeconds();
         let time = (after - before);
         benchmark_ac(n - 1, f, time :: acc)
