@@ -1,10 +1,9 @@
 
-def main(_args: Array[String]): Int32 & Impure =
+def main(): Int32 & Impure =
     let iterations = 1000;
 
     let constant_runtime = benchmark(constants, iterations);
     let deadvariable_runtime = benchmark(deadVariable, iterations);
-    print_benchmark("DeadVariable", deadvariable_runtime);
     let functionmap_runtime = benchmark(functionMap, iterations);
     let letmapconstant_runtime = benchmark(letMapConstant,iterations);
     let letmapadd_runtime = benchmark(letMapAdd,iterations);
