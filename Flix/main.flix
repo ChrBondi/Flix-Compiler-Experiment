@@ -131,7 +131,7 @@ def functionMap(hof : List[Int32] -> Unit): Unit & Pure =
     let newList = List.map(double, list);
     hof(newList)
 
-def get42(): Int32 & Pure = 42
+def get42(): Int32 & Pure = 42+5
 
 def getVarPure(hof : List[Int32] -> Unit): Unit & Pure = 
     let x = get42();
@@ -139,7 +139,8 @@ def getVarPure(hof : List[Int32] -> Unit): Unit & Pure =
     let newList = List.map((y -> x+y), list);
     hof(newList)
 
-def getHello42(): Int32 & Impure = print("Hello"); 42
+def getHello42(): Int32 & Impure = 
+42+5 as & Impure
 
 def getVarImpure(hof : List[Int32] -> Unit): Unit & Impure = 
     let x = getHello42();

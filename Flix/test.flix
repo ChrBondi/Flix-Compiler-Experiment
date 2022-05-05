@@ -3,6 +3,7 @@ pub def foo(): Int32 =
     let x = 42;
     bar(x)
 
-def _main2(_args: Array[String]): Int32 & Impure =
+def main(): String & Impure =
     print("Hello");
-    foo()
+    let _ = foo();
+    "hello"
