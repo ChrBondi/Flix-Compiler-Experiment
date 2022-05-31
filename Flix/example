@@ -1,7 +1,0 @@
-def main(): Int32 =
-    let length = 5;
-    let width = 3;
-    let squareArea = calcArea(length, width);
-    squareArea
-
-def calcArea(x: Int32, y: Int32): Int32 = x*y
