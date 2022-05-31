@@ -1,5 +1,5 @@
 
-def main(): Int32 & Impure =
+def main(): Unit & Impure =
     let iterations = 1000;
 
     let constant_runtime = benchmark(constants, iterations);
@@ -13,7 +13,6 @@ def main(): Int32 & Impure =
     let branch_impure_runtime = benchmark_impure(branchImpure, iterations);
     let lambda_runtime = benchmark(lambda, iterations);
 
-    println();
     print_benchmark("Constant", constant_runtime);
     print_benchmark("DeadVariable", deadvariable_runtime);
     print_benchmark("FunctionMap", functionmap_runtime);
@@ -23,9 +22,8 @@ def main(): Int32 & Impure =
     print_benchmark("GetVarImpure", get_var_impure_runtime);
     print_benchmark("BranchPure", branch_pure_runtime);
     print_benchmark("BranchImpure", branch_impure_runtime);
-    print_benchmark("Lambda", lambda_runtime);
+    print_benchmark("Lambda", lambda_runtime)
 
-    0
 
 def print_benchmark(name: String, runtime: (Int64, Int64, Int64)): Unit & Impure = {
     let (totalTimeSeconds, average, median) = runtime;
@@ -139,8 +137,7 @@ def getVarPure(hof : List[Int32] -> Unit): Unit & Pure =
     let newList = List.map((y -> x+y), list);
     hof(newList)
 
-def getHello42(): Int32 & Impure = 
-42+5 as & Impure
+def getHello42(): Int32 & Impure = 42+5 as & Impure
 
 def getVarImpure(hof : List[Int32] -> Unit): Unit & Impure = 
     let x = getHello42();
